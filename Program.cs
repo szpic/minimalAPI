@@ -5,17 +5,27 @@ using minimalAPI.Validation;
 using minimalAPI.Contracts.Requests;
 using minimalAPI.Webservices.Interfaces;
 using minimalAPI.Webservices;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using minimalAPI.Dtos;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddFastEndpoints();
 builder.Services.AddSwaggerDoc();
 
-builder.Services.AddHttpClient("AntaresWebservice", client =>
+IEnumerable<Server> servers = builder.Configuration.GetSection("servers").Get<IEnumerable<Server>>();
+
+foreach (var server in servers)
 {
-    client.BaseAddress = new Uri("https://s117-pl.ogame.gameforge.com/api/");
-    client.Timeout = new TimeSpan(0, 0, 30);
-});
-builder.Services.AddScoped<IAntaresWebservice, AntaresWebservice>();
+    builder.Services.AddHttpClient(server.name, client =>
+    {
+        client.BaseAddress = new Uri(server.url);
+        client.Timeout = new TimeSpan(0, 0, 30);
+    });
+}
+
+builder.Services.AddScoped<ICommonWebservice, CommonWebservice>();
 //builder.Services.AddScoped<IValidator<ID>, IDValidator>();
 
 var app = builder.Build();

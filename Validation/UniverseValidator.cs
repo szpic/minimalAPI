@@ -4,12 +4,11 @@ using FastEndpoints;
 
 namespace minimalAPI.Validation;
 
-public class PlayerValidator : Validator<PlayerReq>
+public class UniverseValidator : Validator<UniverseReq>
 {
-    public PlayerValidator()
+    public UniverseValidator()
     {
         RuleFor(x => x.universe).NotEmpty().WithMessage("Universe name cannot be empty");
-        RuleFor(x => x.name).NotEmpty().WithMessage("Player name cannot be empty");
     }
 }
 

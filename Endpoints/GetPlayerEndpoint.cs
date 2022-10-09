@@ -6,26 +6,26 @@ using minimalAPI.Webservices.Interfaces;
 
 namespace minimalAPI.Endpoints;
 
-[HttpGet("player/{name}"), AllowAnonymous]
+[HttpGet("/{universe}/player/{name}"), AllowAnonymous]
 public class GetPlayerEndpoint : Endpoint<PlayerReq, PlayerResponse>
 {
-    private readonly IAntaresWebservice antaresWebservice;
+    private readonly ICommonWebservice _commonWebservice;
 
-    public GetPlayerEndpoint(IAntaresWebservice antaresWebservice)
+    public GetPlayerEndpoint(ICommonWebservice commonWebservice)
     {
-        this.antaresWebservice = antaresWebservice;
+        _commonWebservice = commonWebservice;
     }
     public override async Task HandleAsync(PlayerReq req, CancellationToken ct)
     {
-        var player = await antaresWebservice.GetPlayer(req.name);
-        if(player == null)
+        var player = await _commonWebservice.GetPlayer(req.universe, req.name);
+        if (player == null)
         {
             await SendNotFoundAsync();
         }
         else
         {
-            var points = await antaresWebservice.GetPlayerPoints(player.Id);
-            if(points == null)
+            var points = await _commonWebservice.GetPlayerPoints(req.universe, player.Id);
+            if (points == null)
             {
                 await SendNotFoundAsync();
             }
