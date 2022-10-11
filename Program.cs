@@ -13,6 +13,7 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddFastEndpoints();
 builder.Services.AddSwaggerDoc();
+builder.Services.AddLazyCache();
 
 IEnumerable<Server> servers = builder.Configuration.GetSection("servers").Get<IEnumerable<Server>>();
 
